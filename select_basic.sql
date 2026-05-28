@@ -188,30 +188,6 @@ FROM employees
 WHERE department_id IN (20, 50)
 ORDER BY first_name ASC;
 
-SELECT employee_id, first_name, job_id, salary
-FROM employees
-WHERE salary >= 3000;
-
-SELECT employee_id, first_name, job_id, salary, department_id
-FROM employees
-WHERE job_id = 'ST_MAN';
-
-SELECT employee_id, first_name, job_id, salary, hire_date, department_id
-FROM employees
-WHERE hire_date >= TO_DATE('2006-01-01', 'YYYY-MM-DD');
-
-SELECT first_name, job_id, salary, department_id
-FROM employees
-WHERE salary BETWEEN 3000 AND 5000;
-
-SELECT employee_id, first_name, job_id, salary, hire_date, department_id
-FROM employees
-WHERE hire_date >= TO_DATE('2005-01-01', 'YYYY-MM-DD')
-AND hire_date <  TO_DATE('2006-01-01', 'YYYY-MM-DD');
-
-
-
-
 
 
 
