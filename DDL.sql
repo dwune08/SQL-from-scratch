@@ -87,55 +87,89 @@ SELECT * FROM tab;
 
 -- 고객 테이블 구조 만들기
 CREATE TABLE tb_customer(
-    customer_id CHAR(7) NOT NULL PRIMARY KEY,
-    customer_name VARCHAR2(15) NOT NULL,
-    gender CHAR(1) NOT NULL,
-    birth_date DATE NOT NULL,
-    phone_number VARCHAR2(20),
-    email VARCHAR2(50),
-    total_point NUMBER(10) DEFAULT 0 NOT NULL,
-    created_at DATE DEFAULT SYSDATE NOT NULL
+    customer_id     CHAR(7)         NOT NULL PRIMARY KEY,       -- 고객코트
+    customer_name   VARCHAR2(15)    NOT NULL,                   -- 고객명
+    gender          CHAR(1)         NOT NULL,                   -- 성별구분
+    birth_date      DATE NOT NULL,                              -- 생일
+    phone_number    VARCHAR2(20),                               -- 전화번호
+    email           VARCHAR2(50),                               -- email
+    total_point     NUMBER(10)      DEFAULT 0 NOT NULL,         -- 누적포인트
+    created_at      DATE            DEFAULT SYSDATE NOT NULL    -- 등록일
 );
+
+DESC tb_customer;
+SELECT * FROM tb_customer;
+
+INSERT INTO tb_customer -- (customer_id, customer_name, gender, birth_date, phone_number, email, total_point, created_at)
+VALUES ('2017042', '강원진', 'M', TO_DATE('19810603', 'YYYY-MM-DD'), '010-8202-8790', 'wjgang@navi.com', 280300, DEFAULT);
+INSERT INTO tb_customer
+VALUES ('2017053', '나경숙', 'W', TO_DATE('19891225', 'YYYY-MM-DD'), '010-4509-0043', 'ksna@boram.co.kr', 4500, DEFAULT);
+INSERT INTO tb_customer
+VALUES ('2017108', '박승대', 'M', TO_DATE('19710430', 'YYYY-MM-DD'), '', 'sdpark@haso.com', 23450, DEFAULT);
+
+
+DELETE FROM tb_customer;
+
+
+-- (customer_id, customer_name, gender, birth_date, phone_number, email, total_point, created_at)
+INSERT ALL
+    INTO tb_customer
+        (customer_id, customer_name, gender, birth_date, phone_number, email, total_point)
+    VALUES 
+        ('2017042', '강원진', 'M', TO_DATE('19810603', 'YYYY-MM-DD'), '010-8202-8790', 'wjgang@navi.com', 280300)
+    
+    INTO tb_customer
+        (customer_id, customer_name, gender, birth_date, phone_number, email, total_point)
+    VALUES 
+        ('2017053', '나경숙', 'W', TO_DATE('19891225', 'YYYY-MM-DD'), '010-4509-0043', 'ksna@boram.co.kr', 4500)
+
+    INTO tb_customer
+        (customer_id, customer_name, gender, birth_date, phone_number, email, total_point)
+    VALUES
+        ('2017108', '박승대', 'M', TO_DATE('19710430', 'YYYY-MM-DD'), '', 'sdpark@haso.com', 23450)
+SELECT *
+FROM DUAL;
+
 
 
 -- 예제 1, 회원정보 테이블 MEMBER 만들기
 CREATE TABLE member (
-    member_id NUMBER(20) NOT NULL PRIMARY KEY,
-    member_name VARCHAR2(20) NOT NULL,
-    birth_date DATE NOT NULL,
-    phone_number VARCHAR2(13) NOT NULL,
-    address VARCHAR2(100) NOT NULL
+    member_id       NUMBER(20)      NOT NULL PRIMARY KEY,
+    member_name     VARCHAR2(20)    NOT NULL,
+    birth_date      DATE            NOT NULL,
+    phone_number    VARCHAR2(13)    NOT NULL,
+    address         VARCHAR2(100)   NOT NULL
 );
 
 
 -- 예제 2, 도서 정보 테이블 BOOK 만들기
 CREATE TABLE book (
-    book_id NUMBER(4) NOT NULL PRIMARY KEY,
-    book_title VARCHAR2(100) NOT NULL,
-    stock_quantity NUMBER(6) NOT NULL,
-    price NUMBER(10) NOT NULL,
-    publisher VARCHAR2(50) NOT NULL
+    book_id         NUMBER(4)       NOT NULL PRIMARY KEY,
+    book_title      VARCHAR2(100)   NOT NULL,
+    stock_quantity  NUMBER(6)       NOT NULL,
+    price           NUMBER(10)      NOT NULL,
+    publisher       VARCHAR2(50)    NOT NULL
 );
 
 
 -- 예제 3, 회원의 책 주문 정보를 저장하는 테이블 BOOK_ORDER 만들기
 CREATE TABLE book_order (
-    order_id VARCHAR2(10) NOT NULL PRIMARY KEY,
-    member_id NUMBER(20) NOT NULL,
-    book_id NUMBER(4) NOT NULL,
-    order_quantity NUMBER(6) NOT NULL,
-    order_date DATE NOT NULL
+    order_id        VARCHAR2(10)    NOT NULL PRIMARY KEY,
+    member_id       NUMBER(20)      NOT NULL,
+    book_id         NUMBER(4)       NOT NULL,
+    order_quantity  NUMBER(6)       NOT NULL,
+    order_date      DATE            NOT NULL
 );
 
 
 -- 예제 4, 회원이 작성한 도서 리뷰 테이블 BOOK_REVIEW 만들기
 CREATE TABLE book_review (
-    review_id NUMBER(10) NOT NULL PRIMARY KEY,
-    member_id NUMBER(20) NOT NULL,
-    book_id NUMBER(4) NOT NULL,
-    rating NUMBER(1) NOT NULL,
-    review_content VARCHAR2(1000) NOT NULL,
-    review_date DATE NOT NULL
+    review_id       NUMBER(10)      NOT NULL PRIMARY KEY,
+    member_id       NUMBER(20)      NOT NULL,
+    book_id         NUMBER(4)       NOT NULL,
+    rating          NUMBER(1)       NOT NULL,
+    review_content  VARCHAR2(1000)  NOT NULL,
+    review_date     DATE            NOT NULL
 );
 
 
