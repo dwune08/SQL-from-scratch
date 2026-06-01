@@ -1,0 +1,491 @@
+
+-- 기존 EMP01 삭제
+DROP TABLE emp01 PURGE;
+
+-- EMP01 테이블 생성
+CREATE TABLE emp01(
+empno NUMBER(4),
+ename VARCHAR2(10),
+job VARCHAR2(9),
+depno NUMBER(4)
+);
+
+
+-- EMP01 테이블에 데이터 삽입
+INSERT INTO emp01
+VALUES(NULL, NULL, 'SALESMAN', 30);
+
+SELECT * FROM emp01;
+
+
+-- 기존 EMP01 삭제
+DROP TABLE emp01 PURGE;
+
+-- NOT NULL 조건을 포함하여 EMP01 테이블 새로 생성
+CREATE TABLE emp01(
+empno NUMBER(4) NOT NULL,
+ename VARCHAR2(10) NOT NULL,
+job VARCHAR2(9),
+depno NUMBER(4)
+);
+
+-- EMP01 테이블에 NULL을 포함한 데이터 삽입
+INSERT INTO emp01
+VALUES(NULL, NULL, 'SALESMAN', 30); -- 에러남
+
+
+-- 값을 다 채워서 입력
+INSERT INTO emp01
+VALUES(7499, 'ALLEN', 'SALESMAN', 30);
+
+SELECT * FROM emp01;
+
+
+-- emp02 테이블 삭제
+DROP TABLE emp02 PURGE;
+
+
+-- emp02 테이블 생성
+CREATE TABLE emp02(
+empno NUMBER(4) UNIQUE,
+ename VARCHAR2(10) NOT NULL,
+job VARCHAR2(9),
+deptno NUMBER(4)
+);
+
+
+--emp02 테이블에 데이터 삽입
+INSERT INTO emp02(empno, ename, job, deptno)
+VALUES(7499, 'ALLEN', 'SALESMAN', 30);
+
+
+-- UNIQUE 제약조건이 있는 컬럼에 NULL 추가
+INSERT INTO emp02(empno, ename, job, deptno)
+VALUES(NULL, 'JONES', 'MANAGER', 20);
+
+
+-- NULL 값이 중복 저장되는지 확인
+INSERT INTO emp02(empno, ename, job, deptno)
+VALUES(NULL, 'JONES', 'SALESMAN', 10);
+
+
+SELECT * FROM emp02;
+
+
+-- HR 사용자가 생성한 테이블 목록 확인
+SELECT TABLE_NAME FROM USER_TABLES
+ORDER BY TABLE_NAME DESC;
+
+
+-- EMP02 테이블의 제약 조건 확인하기
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME='EMP02';
+
+-- EMP02 테이블의 제약 조건의 소유자, 제약 조건명, 테이블명, 컬럼명 확인하기
+SELECT OWNER, CONSTRAINT_NAME, TABLE_NAME, COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME='EMP02';
+
+
+
+DROP TABLE emp03 PURGE;
+
+-- EMP03 테이블 생성
+CREATE TABLE emp03(
+empno NUMBER(4) PRIMARY KEY,
+ename VARCHAR2(10) NOT NULL,
+job VARCHAR2(9),
+deptno NUMBER(2)
+);
+
+
+-- EMP03에 데이터 삽입
+INSERT INTO emp03
+VALUES(7499, 'ALLEN', 'SALESMAN', 30);
+
+
+SELECT * FROM emp03;
+
+
+INSERT INTO emp03
+VALUES(7499, 'JONES', 'MANAGER', 20);
+-- 무결성 제약 조건 위배(중복)로 입력 불가
+
+
+INSERT INTO emp03
+VALUES(NULL, 'JONES', 'MANAGER', 20);
+-- 무결성 제약 조건 위배(NULL 입력 불가)로 입력 불가
+
+
+--EMP03 테이블의 제약 조건 확인
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP03';
+
+
+-- EMP03 테이블의 제약 조건의 소유자, 제약 조건명, 테이블명, 컬럼명 확인하기
+SELECT OWNER, CONSTRAINT_NAME, TABLE_NAME, COLUMN_NAME
+FROM USER_CONS_COLUMNS
+WHERE TABLE_NAME='EMP03';
+
+
+
+--DROP TABLE dept01 purge;
+
+--DEPT01 테이블 생성하고 데이터 추가
+CREATE TABLE dept01(
+deptno NUMBER(2) PRIMARY KEY,
+dname VARCHAR2(14) NOT NULL,
+loc VARCHAR2(13)
+);
+
+Insert into dept01 (deptno,dname,loc) values (10,'ACCOUNTING','NEW YORK');
+Insert into dept01 (deptno,dname,loc) values (20,'RESEARCH','DALLAS');
+Insert into dept01 (deptno,dname,loc) values (30,'SALES','CHICAGO');
+Insert into dept01 (deptno,dname,loc) values (40,'OPERATIONS','BOSTON');
+
+SELECT * FROM dept01;
+
+-- 외래 키 제약 조건을 지정하지 않았던 EMP03 테이블에
+-- 존재하지 않는 50번 부서번호 저장
+INSERT INTO EMP03
+VALUES(7566, 'JONES', 'MANAGER', 50);
+
+SELECT * FROM emp03;
+
+
+-- DEPT01의 DEPTNO를 참조하는 외래키 제약조건을 설정하여
+-- EMP04 테이블 생성
+CREATE TABLE emp04(
+empno NUMBER(4) PRIMARY KEY,                -- 사원번호
+ename VARCHAR2(10) NOT NULL,                -- 사원명
+job VARCHAR2(9),                            -- 직무
+deptno NUMBER(2) REFERENCES dept01(deptno)  -- 부서번호
+);
+
+
+-- EMP04 테이블에 데이터 추가
+INSERT INTO emp04
+VALUES(7499, 'ALLEN', 'SALESMAN', 30);
+
+SELECT * FROM emp04;
+
+INSERT INTO emp04
+VALUES(7566, 'JONES', 'MANAGER', 50);
+-- 50번 부서가 존재하지 않기 때문에 오류 발생
+
+
+-- DROP TABLE emp05 purge;
+
+-- EMP05 테이블 생성
+CREATE TABLE emp05(
+empno NUMBER(4) PRIMARY KEY,
+ename VARCHAR2(10) NOT NULL,
+gender CHAR(1) CHECK (gender IN('M', 'F')),
+regdate DATE DEFAULT SYSDATE
+);
+
+
+-- EMP05 테이블에 데이터 추가
+INSERT INTO emp05(empno, ename, gender)
+VALUES(7566, 'JONES', 'M');
+
+INSERT INTO EMP05 (empno, ename, gender, regdate)
+VALUES (7567, 'JONES', 'M', SYSDATE);
+
+SELECT * FROM emp05;
+
+
+INSERT INTO emp05(empno, ename, gender)
+VALUES(7568, 'JONES', 'A');
+-- 체크 제약 조건 위배 오류
+
+
+--SEARCH_CONDITION 컬럼 값으로 제약조건을 알아본다.
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, SEARCH_CONDITION
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME='EMP05';
+
+
+
+-- EMP06 테이블 생성 - 컬럼 레벨 형식
+CREATE TABLE emp06(
+    empno   NUMBER(4)       CONSTRAINT EMP06_EMPNO_PK PRIMARY KEY,
+    ename   VARCHAR2(10)    CONSTRAINT EMP06_ENAME_NN NOT NULL,
+    job     VARCHAR2(9)     CONSTRAINT EMP06_JOB_UK UNIQUE,
+    deptno  NUMBER(2)       CONSTRAINT EMP06_DEPTNO_FK REFERENCES DEPT01(DEPTNO)
+);
+
+
+--EMP06에 데이터 삽입
+INSERT INTO emp06
+VALUES(7499, 'ALLEN', 'SALESMAN', 30);
+
+SELECT * FROM emp06;
+
+
+-- 지정된 사용자 제약 조건명을 확인
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME = 'EMP06';
+
+
+INSERT INTO emp06 VALUES(7499, 'ALLEN', 'SALESMAN', 30);
+-- EMP06_EMPNO_PK에 위배, 즉 PK가 우선순위 높음.
+
+INSERT INTO emp06 VALUES(7499, NULL, 'SALESMAN', 30);
+-- 사용자 제약 조건명이 아닌, 'NULL을 삽입할 수 없습니다'라는 메세지
+-- NOT NULL 위배가 최상위
+
+INSERT INTO emp06 VALUES(7499, 'ALLEN', 'SALESMAN', 50);
+-- EMP06_EMPNO_PK에 위배
+
+INSERT INTO emp06 VALUES(7500, 'ALLEN', 'SALESMAN', 50);
+-- EMP06_JOB_UK에 위배, 즉 PK다음으로 UNIQUE 제약 조건이 우선순위.
+
+INSERT INTO emp06 VALUES(7500, 'ALLEN', 'MANAGER', 50);
+-- EMP06_DEPTNO_FK에 위배, 즉 우선순위는 NOT NULL > PK > UNIQUE > FK
+
+
+DROP TABLE emp08 PURGE;
+-- 테이블 레벨 제약 조건 정의된 테이블 EMP08 생성
+CREATE TABLE emp08(
+    empno   NUMBER(4),
+    ename   VARCHAR2(4) NOT NULL,
+    job     VARCHAR2(9),
+    deptno  NUMBER(2),
+    CONSTRAINT EMP08_EMPNO_PK PRIMARY KEY(empno),
+    CONSTRAINT EMP08_JOB_UK UNIQUE(job),
+    CONSTRAINT EMP08_DEPTNO_FK FOREIGN KEY(deptno) REFERENCES DEPT01(DEPTNO)
+);
+    
+
+-- EMP08의 제약 조건 확인
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS  
+WHERE TABLE_NAME = 'EMP08';
+
+
+DROP TABLE EMP09 PURGE;
+-- 아무런 제약 조건도 지정하지 않고 EMP09 테이블을 생성
+CREATE TABLE emp09(
+empno NUMBER(4),
+ename VARCHAR2(10),
+job VARCHAR2(9),
+deptno NUMBER(2)
+);
+
+
+-- EMP09의 제약조건 확인
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS WHERE TABLE_NAME='EMP09';
+
+
+-- EMPNO 컬럼을 기본키, DEPTNO 컬럼을 외래키 설정
+ALTER TABLE emp09
+ADD CONSTRAINT EMP09_EMPNO_PK PRIMARY KEY(empno);
+
+ALTER TABLE emp09
+ADD CONSTRAINT EMP09_DEPTNO_FK FOREIGN KEY(deptno) REFERENCES DEPT01(DEPTNO);
+
+-- JOB 컬럼에 체크 제약 조건 추가
+ALTER TABLE emp09
+ADD CONSTRAINT EMP09_JOB_CK
+CHECK(JOB IN('CLERK', 'SALESMAN', 'MANAGER', 'ANALYST'));
+
+
+-- emp06 테이블의 제약 조건 확인
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS WHERE TABLE_NAME='EMP06';
+
+SELECT * FROM emp06;
+
+-- 제약 조건 삭제
+ALTER TABLE emp06
+DROP CONSTRAINT emp06_empno_pk;
+
+ALTER TABLE emp06
+DROP CONSTRAINT emp06_deptno_fk;
+
+
+-- DEPT02 테이블 생성
+CREATE TABLE dept02(
+    deptno NUMBER(2),
+    dname VARCHAR2(14) NOT NULL,
+    loc VARCHAR2(13),
+    CONSTRAINT DEPT02_DEPTNO_PK PRIMARY KEY(DEPTNO)
+);
+
+-- 제약 조건 확인
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME='DEPT02';
+
+-- DEPT02 테이블에 데이터 삽입
+INSERT INTO dept02 VALUES(10, 'ACCOUNTING', 'NEW YORK');
+INSERT INTO dept02 VALUES(20, 'RESEARCH', 'DALLAS');
+
+SELECT * FROM DEPT02;
+
+
+DROP TABLE EMP02 PURGE;
+
+-- DEPT02를 참조하는 외래키를 가진 EMP02 테이블 생성
+CREATE TABLE emp02(
+empno NUMBER(4),
+ename VARCHAR2(10) NOT NULL,
+job VARCHAR2(9),
+deptno NUMBER(2),
+CONSTRAINT EMP02_EMPNO_PK PRIMARY KEY(EMPNO),
+CONSTRAINT EMP02_DEPTNO_FK FOREIGN KEY(DEPTNO) REFERENCES DEPT02(DEPTNO)
+);
+
+SELECT CONSTRAINT_NAME, CONSTRAINT_TYPE, TABLE_NAME, R_CONSTRAINT_NAME
+FROM USER_CONSTRAINTS
+WHERE TABLE_NAME='EMP02';
+
+
+-- EMP02에 샘플 데이터 추가
+INSERT INTO emp02 VALUES(7499, 'ALLEN', 'SALESMAN', 10);
+INSERT INTO emp02 VALUES(7369, 'SMITH', 'CLERK', 20);
+
+SELECT * FROM emp02;
+
+
+-- DEPT02 테이블에서 데이터 삭제
+DELETE FROM dept02
+WHERE deptno = 10;
+-- 오류 : 무결성 제약조건(HR.EMP02_DEPTNO_FK)이 위배되었습니다- 자식 레코드가 발견되었습니다
+
+
+-- 자식 데이터를 삭제한 후 부모 데이터 삭제
+DELETE FROM emp02
+WHERE deptno = 10;
+
+DELETE FROM dept02
+WHERE deptno = 10;
+
+
+-- 사원을 다른 부서로 옮기고 부모 데이터 삭제
+UPDATE emp02
+SET deptno = 20
+WHERE deptno = 10;
+
+DELETE FROM dept02
+WHERE deptno = 10;
+
+
+
+-- 진료과목 테이블 생성
+CREATE TABLE treatment(
+    t_no            NUMBER(4) NOT NULL,     -- 진료번호
+    t_course_abbr   VARCHAR2(3) NOT NULL,   -- 진료과목약어
+    t_course        VARCHAR2(30) NOT NULL,  -- 진료과목
+    t_tel           VARCHAR2(15) NOT NULL,  -- 전화번호
+    CONSTRAINT TREATMENT_NO_PK PRIMARY KEY(t_no),
+    CONSTRAINT TREATMENT_COURSE_ABBR_UK UNIQUE(t_course_abbr)
+);
+
+
+-- 테이블과 칼럼에 주석 작성
+COMMENT ON TABLE TREATMENT IS '진료 테이블';
+COMMENT ON COLUMN TREATMENT.T_NO IS'진료번호';
+COMMENT ON COLUMN TREATMENT.T_COURSE_ABBR IS'진료과목약어';
+COMMENT ON COLUMN TREATMENT.T_COURSE IS'진료과목';
+COMMENT ON COLUMN TREATMENT.T_TEL IS '전화번호';
+
+
+-- 주석 확인
+SELECT TABLE_NAME, COLUMN_NAME, COMMENTS
+FROM ALL_COL_COMMENTS
+WHERE TABLE_NAME = 'TREATMENT';
+
+
+-- 테이블에 데이터 입력
+INSERT INTO TREATMENT(T_NO, T_COURSE_ABBR, T_COURSE, T_TEL)
+VALUES(1001,'NS', '신경외과', '02-3452-1009');
+
+INSERT INTO TREATMENT(T_NO, T_COURSE_ABBR, T_COURSE, T_TEL)
+VALUES(1002,'OS', '정형외과', '02-3452-2009');
+
+INSERT INTO TREATMENT(T_NO, T_COURSE_ABBR, T_COURSE, T_TEL)
+VALUES(1003, 'C', '순환기내과', '02-3452-3009');
+
+SELECT * FROM TREATMENT;
+
+
+
+-- 의사 테이블 생성
+CREATE TABLE doctor(
+    d_no    NUMBER(4) NOT NULL,     -- 의사번호
+    d_name  VARCHAR2(20) NOT NULL,  -- 의사이름
+    d_ssn   CHAR(14) NOT NULL,      -- 주민등록번호
+    d_email VARCHAR2(80) NOT NULL,  -- 이메일
+    d_major VARCHAR2(50) NOT NULL,  -- 전공
+    t_no    NUMBER(4),              -- 진료과목번호
+    CONSTRAINT DOCTOR_D_NO_PK PRIMARY KEY(d_no)
+);
+
+
+-- 외래키 삭제시 자식 테이블의 데이터도 함께 삭제되도록 외래키에 옵션 지정
+ALTER TABLE doctor
+ADD CONSTRAINT DOCTOR_T_NO FOREIGN KEY(t_no) REFERENCES TREATMENT(t_no)
+ON DELETE CASCADE;
+
+
+-- 의사 테이블에 데이터 삽입
+INSERT INTO DOCTOR(D_NO, D_NAME, D_SSN, D_EMAIL, D_MAJOR, T_NO)
+VALUES(1, '홍길동', '660606-1234561', 'javauser@naver.com', '척추신경외과',1001);
+
+INSERT INTO DOCTOR(D_NO, D_NAME, D_SSN, D_EMAIL, D_MAJOR, T_NO)
+VALUES(2,'이재환', '690724-1674536', 'jaehwan@naver.com', '뇌졸중,뇌혈관외과', 1003);
+
+INSERT INTO DOCTOR(D_NO, D_NAME, D_SSN, D_EMAIL, D_MAJOR, T_NO)
+VALUES(3, '양익환', '700129-1328962', 'sheep1209@naver.com', '인공관절,관절염', 1002);
+
+INSERT INTO DOCTOR(D_NO, D_NAME, D_SSN, D_EMAIL, D_MAJOR, T_NO)
+VALUES(4, '김승현', '720901-1348940', 'seunghyeon@naver.com', '종양외과,외상전문', 1002);
+
+SELECT * FROM doctor;
+COMMIT;
+
+
+-- TREATMENT 테이블에서 데이터 삭제
+DELETE FROM treatment
+WHERE t_no = 1002;
+
+
+-- 결과 확인
+SELECT * FROM TREATMENT;
+SELECT * FROM doctor;
+
+
+-- 롤백
+ROLLBACK;
+
+-- 제약 조건 삭제
+ALTER TABLE doctor
+DROP CONSTRAINT doctor_t_no;
+
+
+-- 외래키 데이터 삭제시 자식 테이블의 데이터가 NULL이 되는 옵션 지정
+ALTER TABLE doctor
+ADD CONSTRAINT doctor_t_no FOREIGN KEY(t_no) REFERENCES treatment(t_no)
+ON DELETE SET NULL;
+
+-- 데이터 삭제
+DELETE FROM treatment
+WHERE t_no = 1002;
+
+
+-- HR 사용자로 생성한 DEPT01 테이블과 참조키(외래키) 설정 테이블 확인.
+SELECT FK.owner, FK.constraint_name , FK. table_name
+FROM all_constraints FK, all_constraints PK
+WHERE FK.R_CONSTRAINT_NAME = PK. CONSTRAINT_NAME
+    AND PK.owner = 'HR'
+    AND FK. CONSTRAINT_TYPE = 'R'
+    AND PK. TABLE_NAME = 'DEPT01'
+ORDER BY FK. TABLE_NAME;
+
+SELECT * FROM emp09;
