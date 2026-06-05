@@ -199,14 +199,17 @@ WHERE department_name = 'Sales';
 
 -- 예제 2, 커미션을 받는 사원의 이름, 커미션 비율, 부서명
 SELECT first_name, commission_pct, department_name
-FROM employees e INNER JOIN departments d
+FROM employees e LEFT OUTER JOIN departments d
 ON e.department_id = d.department_id
 WHERE commission_pct IS NOT NULL;
 -- 34행
 
 
 -- 예제 3, IT 부서에서 근무하고 있는 사원의 사원번호, 이름, 직무명, 부서명
-SELECT employee_id, first_name, job_title, department_name
+SELECT employee_id, 
+    first_name,
+    job_title, 
+    department_name
 FROM employees e INNER JOIN departments d ON e.department_id = d.department_id
                  INNER JOIN jobs j ON e.job_id = j.job_id
 WHERE department_name = 'IT';
@@ -215,12 +218,13 @@ WHERE department_name = 'IT';
 
 -- 예제 4, Guy와 동일한 부서에서 근무하는 동료들의 이름과 부서번호
 --         단,Guy는 제외
-SELECT e.first_name, department_id
+SELECT e.first_name AS "Guy 동료", department_id
 FROM employees g INNER JOIN employees e
 USING(department_id)
 WHERE g.first_name = 'Guy'
-AND e.first_name != 'Guy';
+AND e.first_name <> 'Guy';
 -- 5행
+
 
 
 

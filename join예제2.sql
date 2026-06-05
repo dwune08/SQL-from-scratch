@@ -20,5 +20,10 @@ ORDER BY s_num;
 -- 예제 3-1. 수강 신청한 학생명, 과목명, 등록일(2-18.12.28 형태)을 조회
 SELECT sd_name, c_name, TO_CHAR(e_date, 'YYYY.MM.DD') AS e_date
 FROM enrollment e INNER JOIN student std USING(sd_num)
-                  INNER JOIN course c USING(c_num)
+                  INNER JOIN course c USING(c_num);
             
+-- 예제 3-2. 
+SELECT s_name, sd_num, sd_name, c_name, TO_CHAR(e_date, 'YYYY.MM.DD') AS e_date
+FROM enrollment e INNER JOIN student std USING(sd_num)
+                  INNER JOIN course c USING(c_num)
+                  INNER JOIN subject j USING(s_num)
